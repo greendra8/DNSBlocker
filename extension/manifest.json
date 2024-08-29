@@ -19,6 +19,8 @@
     },
     "options_page": "options/options.html",
     "web_accessible_resources": [
-      "blocked.html"
+      "blocked.html",
+      "blocked.js",
+      "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
     ]
   }
