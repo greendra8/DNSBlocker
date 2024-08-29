@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+    "name": "DNS Manager Extension",
+    "version": "1.0",
+    "description": "Manage DNS blocking rules for the DNS Manager project",
+    "permissions": [
+      "storage",
+      "webRequest",
+      "webRequestBlocking",
+      "<all_urls>",
+      "alarms"
+    ],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": true
+    },
+    "browser_action": {
+      "default_popup": "popup/popup.html"
+    },
+    "options_page": "options/options.html",
+    "web_accessible_resources": [
+      "blocked.html"
+    ]
+  }
