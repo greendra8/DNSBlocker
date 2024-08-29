@@ -2,16 +2,68 @@
 <html>
 <head>
   <title>DNS Manager Options</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-    ul { list-style-type: none; padding: 0; }
-    li { margin-bottom: 5px; }
+    body { 
+      font-family: 'Roboto', sans-serif;
+      max-width: 600px; 
+      margin: 0 auto; 
+      padding: 20px;
+      background-color: #000033;
+      color: #FFFFFF;
+    }
+    h1, h2 { 
+      font-family: 'Playfair Display', serif;
+      color: #FFFFFF;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+      background-color: #FFFFFF;
+      color: #000033;
+      border: none;
+    }
+    button {
+      background-color: #FFFFFF;
+      color: #000033;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #CCCCCC;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #countdown {
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background-color: rgba(255, 255, 255, 0.1);
+      margin-bottom: 5px;
+      padding: 10px;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
   <h1>DNS Manager Options</h1>
-  <label for="userId">User ID:</label>
-  <input type="text" id="userId">
+  <div class="input-group">
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId">
+  </div>
   <button id="saveBtn">Save</button>
   <p id="status"></p>
   

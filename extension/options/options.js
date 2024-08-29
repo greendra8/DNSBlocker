@@ -8,14 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let countdownInterval;
 
-    // Load user ID and blocked domains
-    chrome.storage.local.get(['userId', 'blockedDomains', 'lastSyncTime'], (result) => {
-        userIdInput.value = result.userId || '';
-        displayBlockedDomains(result.blockedDomains || []);
-        if (result.lastSyncTime) {
-            startCountdown(result.lastSyncTime);
-        }
-    });
+    function loadData() {
+        chrome.storage.local.get(['userId', 'blockedDomains'], (result) => {
+            userIdInput.value = result.userId || '';
+            displayBlockedDomains(result.blockedDomains || []);
+        });
+        startCountdown();
+    }
+
+    loadData();
 
     saveBtn.addEventListener('click', () => {
         const newUserId = userIdInput.value;
@@ -27,20 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    refreshBtn.addEventListener('click', () => {
+    refreshBtn.addEventListener('click', refreshBlockedDomains);
+
+    function refreshBlockedDomains() {
         chrome.runtime.sendMessage({ action: 'syncBlockedDomains' }, (response) => {
             if (response.success) {
                 displayBlockedDomains(response.blockedDomains);
-                status.textContent = 'Blocked domains refreshed';
-                startCountdown(Date.now());
+                status.textContent = response.message;
+                startCountdown();
             } else {
-                status.textContent = 'Error refreshing blocked domains';
+                status.textContent = response.message;
             }
             setTimeout(() => {
                 status.textContent = '';
             }, 3000);
         });
-    });
+    }
 
     function displayBlockedDomains(domains) {
         blockedDomainsList.innerHTML = '';
@@ -51,18 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function startCountdown(lastSyncTime) {
+    function startCountdown() {
         clearInterval(countdownInterval);
-        updateCountdown(lastSyncTime);
-        countdownInterval = setInterval(() => updateCountdown(lastSyncTime), 1000);
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
     }
 
-    function updateCountdown(lastSyncTime) {
-        const now = Date.now();
-        const nextSync = lastSyncTime + 5 * 60 * 1000; // 5 minutes in milliseconds
-        const timeLeft = Math.max(0, nextSync - now);
-        const minutes = Math.floor(timeLeft / 60000);
-        const seconds = Math.floor((timeLeft % 60000) / 1000);
-        countdownElement.textContent = `Next refresh in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+    function updateCountdown() {
+        chrome.runtime.sendMessage({ action: 'getLastSyncTime' }, (response) => {
+            const now = Date.now();
+            const nextSync = response.lastSyncTime + 60 * 1000; // 1 minute in milliseconds
+            const timeLeft = Math.max(0, nextSync - now);
+            const seconds = Math.floor(timeLeft / 1000);
+            countdownElement.textContent = `Next refresh in ${seconds} seconds`;
+            
+            if (seconds === 0) {
+                refreshBlockedDomains();
+            }
+        });
     }
 });
